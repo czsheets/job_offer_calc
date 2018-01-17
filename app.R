@@ -1,22 +1,14 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
+#import packages
 library(shiny)
 library(formattable)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
-   # Application title
+   # Title
    titlePanel("Projected Number of offers"),
    
-   # Sidebar with a slider input for number of bins 
+   # Sidebar with a slider input for variables 
    sidebarLayout(
       sidebarPanel(
          sliderInput("primary", "Number of primary interviews (the ones you're most focused on):", min = 1, max = 10, value = 5),
@@ -26,7 +18,7 @@ ui <- fluidPage(
          sliderInput("hoped_jobs", "Number of offers you're hoping for:",  min = 1, max = 10, value = 3)
       ),
       
-      # Show a plot of the generated distribution
+      # Set up text and plot output
       mainPanel(
          textOutput("tab1"),
          br(), br(),
@@ -37,15 +29,17 @@ ui <- fluidPage(
    )
 )
 
-#Define server logic required to draw a histogram
+#Define server logic required to draw a bargraph
 server <- function(input, output) {
   
+  # Text Box 1 - chances of at least one offer based on initial probability, number of primary interviews 
   output$tab1 <- renderText({
     # generate value of at least one job
     prim_job = 1 - (1 - input$probability)^input$primary
     paste("The chances of getting an offer based on your primary interviews are ", percent(prim_job,0))
   })
   
+  # Text Box 2 - chances of at least one offer based on initial probability, total interviews, decay rate
   output$tab2 <- renderText({
     # generate value of at least one job
     all_job_prob = c(rep(input$probability,input$primary-1), cumsum(c(input$probability, rep(-input$decay, input$tot_int - input$primary))))
@@ -58,6 +52,7 @@ server <- function(input, output) {
     paste("The chances of getting an offer after all interviews are ", percent(one_job,0)[1])
   })
   
+  # Plot likelihood of user-inputted expected offers
   output$jobPlot <- renderPlot({
     # generate plot with more than one job
     all_job_prob = c(rep(input$probability,input$primary-1), cumsum(c(input$probability, rep(-input$decay, input$tot_int - input$primary))))
