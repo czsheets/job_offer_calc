@@ -3,7 +3,7 @@ An algorithm that calculates user input to estimate likely probability of gettin
 
 The files include two versions:
 * Python, using text input
-* R [Shiny app] (https://charles-sheets.shinyapps.io/job_apps/), using sliders
+* [R Shiny app](https://charles-sheets.shinyapps.io/job_apps/), using sliders
 
 Users are asked to enter:
 * the number of primary interviews: those they are most interested in
